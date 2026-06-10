@@ -1,0 +1,10 @@
+# Streamlit Cloud system packages (apt-get)
+# Add any system-level dependencies here.
+# This file is read automatically by Streamlit Cloud during deployment.
+
+# Required for opencv-python-headless on some Cloud images
+libgl1-mesa-glx
+libglib2.0-0
+
+# Uncomment if using pytesseract for OCR instead of easyocr
+# tesseract-ocr

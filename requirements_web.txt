@@ -1,0 +1,31 @@
+# VisionBoard AI – Web Version Requirements
+# ──────────────────────────────────────────
+# Local dev:        pip install -r requirements_web.txt
+# Streamlit Cloud:  rename to requirements.txt before deploying
+#                   OR set "Python packages file" to requirements_web.txt
+#                   in Streamlit Cloud advanced settings.
+
+# ── Core computer vision ──────────────────────────────────────────────────────
+opencv-python-headless>=4.8.0   # MUST be headless on Streamlit Cloud (no Qt/GTK)
+mediapipe>=0.10.0
+numpy>=1.24.0
+
+# ── Streamlit + WebRTC ────────────────────────────────────────────────────────
+streamlit>=1.35.0
+streamlit-webrtc>=0.47.0
+aiortc>=1.6.0
+av>=11.0.0
+
+# ── PDF export ────────────────────────────────────────────────────────────────
+reportlab>=4.0.0
+
+# ── OCR ───────────────────────────────────────────────────────────────────────
+# Option A: EasyOCR (accurate, heavy — ~2 GB with torch, exceeds Cloud free tier)
+# Uncomment for local / Docker / paid Cloud deployment:
+# easyocr>=1.7.0
+# torch>=2.0.0
+# torchvision>=0.15.0
+
+# Option B: pytesseract (lightweight, ~50 MB — recommended for Streamlit Cloud)
+# Also add 'tesseract-ocr' to packages.txt for system-level installation.
+# pytesseract>=0.3.10
