@@ -1,31 +1,55 @@
-# VisionBoard AI – Web Version Requirements
-# ──────────────────────────────────────────
-# Local dev:        pip install -r requirements_web.txt
-# Streamlit Cloud:  rename to requirements.txt before deploying
-#                   OR set "Python packages file" to requirements_web.txt
-#                   in Streamlit Cloud advanced settings.
+# VisionBoard AI — Web requirements (kept in sync with requirements.txt)
+# ──────────────────────────────────────────────────────────────────────────────
+# Streamlit Cloud reads requirements.txt by default.
+# This file is a reference copy — keep it identical to requirements.txt.
+# Python version: 3.11  (enforced by runtime.txt)
+# ──────────────────────────────────────────────────────────────────────────────
 
-# ── Core computer vision ──────────────────────────────────────────────────────
-opencv-python-headless>=4.8.0   # MUST be headless on Streamlit Cloud (no Qt/GTK)
-mediapipe>=0.10.0
-numpy>=1.24.0
+# ── OpenCV — HEADLESS MUST COME FIRST ─────────────────────────────────────────
+# Pin opencv-python-headless before mediapipe is listed so pip's dependency
+# resolver sees the headless variant first and does not install opencv-python
+# (the GUI build) alongside it.
+#
+# Root cause of "libGL.so.1: cannot open shared object file":
+#   mediapipe>=0.10.11 lists `opencv-python` as a dependency in its own
+#   metadata. When pip resolves both packages together, it installs the GUI
+#   build which links against libGL — absent in Streamlit Cloud containers.
+#
+# Fix: pin opencv-python-headless here first, then pin mediapipe to a version
+#   whose metadata accepts the headless variant.
+opencv-python-headless==4.8.1.78
+
+# ── MediaPipe ─────────────────────────────────────────────────────────────────
+# 0.10.9 is the last release whose wheel metadata does NOT hard-require
+# opencv-python (GUI). Later versions re-introduced that hard dependency.
+mediapipe==0.10.9
+
+# ── NumPy ─────────────────────────────────────────────────────────────────────
+# NumPy 2.x introduced breaking changes for some mediapipe internals.
+# Pin to the last stable 1.x series.
+numpy==1.26.4
 
 # ── Streamlit + WebRTC ────────────────────────────────────────────────────────
-streamlit>=1.35.0
-streamlit-webrtc>=0.47.0
-aiortc>=1.6.0
-av>=11.0.0
+streamlit==1.35.0
+streamlit-webrtc==0.47.9
+aiortc==1.9.0
+av==12.3.0
 
 # ── PDF export ────────────────────────────────────────────────────────────────
-reportlab>=4.0.0
+reportlab==4.2.5
 
 # ── OCR ───────────────────────────────────────────────────────────────────────
-# Option A: EasyOCR (accurate, heavy — ~2 GB with torch, exceeds Cloud free tier)
-# Uncomment for local / Docker / paid Cloud deployment:
-# easyocr>=1.7.0
-# torch>=2.0.0
-# torchvision>=0.15.0
-
-# Option B: pytesseract (lightweight, ~50 MB — recommended for Streamlit Cloud)
-# Also add 'tesseract-ocr' to packages.txt for system-level installation.
-# pytesseract>=0.3.10
+# EasyOCR + torch (~2 GB installed) exceeds Streamlit Cloud free-tier 1 GB limit.
+# They are intentionally excluded here.
+#
+# Option A — no OCR on Cloud (default, everything else works)
+#   OCR button shows "easyocr not installed" gracefully.
+#
+# Option B — lightweight OCR via pytesseract (~50 MB total)
+#   Uncomment the line below AND add "tesseract-ocr" to packages.txt:
+# pytesseract==0.3.13
+#
+# Option C — full EasyOCR on self-hosted Docker / paid Cloud tier
+#   easyocr==1.7.2
+#   torch==2.3.1
+#   torchvision==0.18.1
