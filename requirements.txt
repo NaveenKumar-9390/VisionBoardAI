@@ -1,40 +1,13 @@
-# VisionBoard AI — Streamlit Community Cloud
-# ──────────────────────────────────────────────────────────────────────────────
-# Python 3.11 is enforced by runtime.txt
-# Do NOT add easyocr / torch / torchvision here — they exceed the 1 GB slug limit
-# ──────────────────────────────────────────────────────────────────────────────
+streamlit>=1.58.0
+streamlit-webrtc>=0.72.1
 
-# ── OpenCV (headless — must be listed BEFORE mediapipe) ───────────────────────
-# mediapipe >= 0.10.11 lists opencv-python (GUI build) as a hard dependency.
-# Listing opencv-python-headless first with an exact pin forces pip to satisfy
-# this requirement with the headless wheel, preventing co-installation of the
-# GUI build which requires libGL.so.1 (absent on Streamlit Cloud).
-opencv-python-headless==4.8.1.78
+opencv-python-headless>=4.12.0
 
-# ── MediaPipe ─────────────────────────────────────────────────────────────────
-# 0.10.9 is the last release that does NOT hard-require opencv-python (GUI).
-mediapipe==0.10.9
+mediapipe==0.10.35
 
-# ── NumPy ─────────────────────────────────────────────────────────────────────
-# Pinned to 1.x — mediapipe has runtime issues with NumPy 2.x.
-numpy==1.26.4
+numpy>=2.0.0
 
-# ── Streamlit + WebRTC ────────────────────────────────────────────────────────
-streamlit==1.35.0
-streamlit-webrtc==0.47.9
-aiortc==1.9.0
-av==12.3.0
+aiortc>=1.14.0
+av>=16.1.0
 
-# ── PDF export ────────────────────────────────────────────────────────────────
-reportlab==4.2.5
-
-# ── OCR — disabled on Cloud free tier ────────────────────────────────────────
-# easyocr + torch total ~2 GB installed, which exceeds the free-tier 1 GB limit.
-# The app degrades gracefully: OCR button shows "easyocr not installed".
-# For local or self-hosted Docker deployment, uncomment:
-# easyocr==1.7.2
-# torch==2.3.1
-# torchvision==0.18.1
-#
-# Lightweight alternative (pytesseract, ~50 MB) — also add tesseract-ocr to packages.txt:
-# pytesseract==0.3.13
+reportlab>=4.2.5
